@@ -4,7 +4,7 @@ Email: naverdo.24BCS10076@sst.scaler.com
 Roll No: 24BCS10076
 Name: Naverdo Sandeep
 
-Disclaimer: This readme is partially written by AI mainly on the setup and results compilation (not analysis) section
+Disclaimer: This readme is partially written by AI mainly on the setup and results compilation (not analysis) section. The Bench code is completely AI but the implementation code is handwritten.
 
 ## Designs
 
