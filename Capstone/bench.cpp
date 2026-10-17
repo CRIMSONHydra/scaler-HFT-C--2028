@@ -5,6 +5,8 @@
 // Run:    ./bench --impl A            5 runs, prints every run and the median
 //         ./bench --impl A --runs 1   a single run
 //         ./bench --impl A --perf     one plain pass, no per-call timers (use this under perf stat)
+//         ./bench --baseline          builds the workload and exits: the harness cost to subtract
+//                                     from each --perf run's perf counters
 //         ./bench --verify            same workload through A, B and C, compared after every op
 
 #include <algorithm>
@@ -20,10 +22,7 @@
 #include "types.hpp"
 #include "book_a.hpp"
 #include "book_b.hpp"
-
-// C does not exist yet, so for now it runs A's code.
-// When it does: include "book_c.hpp" and delete this line.
-using BookC = BookA;
+#include "book_c.hpp"
 
 using Clock = std::chrono::steady_clock;
 
@@ -472,12 +471,14 @@ bool run_verify(const std::vector<Op>& ops) {
 void usage() {
     printf("usage: ./bench --impl A|B|C [--runs N] [--perf]\n");
     printf("       ./bench --verify\n");
+    printf("       ./bench --baseline\n");
 }
 
 int main(int argc, char** argv) {
     std::string impl;
     bool verify = false;
     bool perf = false;
+    bool baseline = false;
     int runs = 5;
 
     for (int i = 1; i < argc; i++) {
@@ -486,13 +487,18 @@ int main(int argc, char** argv) {
         else if (arg == "--runs" && i + 1 < argc) runs = std::atoi(argv[++i]);
         else if (arg == "--verify") verify = true;
         else if (arg == "--perf") perf = true;
+        else if (arg == "--baseline") baseline = true;
         else { usage(); return 1; }
     }
-    if (!verify && impl.empty()) { usage(); return 1; }
+    if (!verify && !baseline && impl.empty()) { usage(); return 1; }
     if (runs < 1) runs = 1;
 
     std::vector<Op> ops = make_workload();
     print_workload_summary(ops);
+
+    // Building the workload is part of every run. Its perf counters, measured
+    // alone here, are subtracted from each --perf run to leave the book's share.
+    if (baseline) return 0;
 
     if (verify) return run_verify(ops) ? 0 : 1;
 

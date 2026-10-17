@@ -3,7 +3,6 @@
 #include<unordered_map>
 #include<vector>
 #include<cstdint>
-#include<cmath>
 
 #include "types.hpp"
 
