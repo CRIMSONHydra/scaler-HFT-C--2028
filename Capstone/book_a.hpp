@@ -7,12 +7,6 @@
 
 #include "types.hpp"
 
-struct Order {
-    long qty;
-    int price;
-    Side side;
-};
-
 class BookA {
 private:
     std::map<int, long, std::greater<int>> bids;
@@ -85,5 +79,9 @@ public:
         }
         res.resize(curr);
         return res;
+    }
+
+    BookA() {
+        orders.reserve(1000000);
     }
 };

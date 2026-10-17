@@ -20,3 +20,9 @@ struct BBO {
     int ask_price;
     long ask_qty;
 };
+
+struct Order {
+    long qty;
+    int price;
+    Side side;
+};
